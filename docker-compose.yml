@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  demoappdb:
+    container_name: app-db
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - 8002:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=admin
+  websiteblogcms:
+    container_name: website-blog-cms
+    image: ${DOCKER_REGISTRY-}websiteblogcms
+    build:
+      context: WebsiteBlogCMS
+      dockerfile: Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - demoappdb
+    environment:
+      - DB_HOST=demoappdb
+      - DB_NAME=BlogDB
+      - DB_SA_PASSWORD=admin
